@@ -23,6 +23,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DeepLearnTest.py" />
+    <Compile Include="forwardProp.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="initWeights.py">
       <SubType>Code</SubType>
     </Compile>
@@ -36,6 +39,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="showData.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test_forwardProp.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

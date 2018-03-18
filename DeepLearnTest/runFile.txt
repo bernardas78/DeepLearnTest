@@ -8,8 +8,11 @@ gc.collect()
 
 n_x = images.shape[0]
 n_y = 10
+L=2
 layerdims = [n_x,16,n_y]
 params = iw.initWeights(layerdims,"forRelu")
+activations = ["relu","sigmoid"]
+yhat = fp.forwardProp(L, params, activations, images, debug=True)
 
 #plt.scatter(images[150,:], images[151,:])
 #plt.show()

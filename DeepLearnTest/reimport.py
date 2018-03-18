@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 import loadData as ld
 import normalizeData as nd
 import initWeights as iw
+import forwardProp as fp
 
 def re():
     importlib.reload(ld)
     importlib.reload(nd)
     importlib.reload(iw)
+    importlib.reload(fp)
