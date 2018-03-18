@@ -1,0 +1,23 @@
+cd c:\labs\DeepLearnTest\DeepLearnTest
+python
+
+exec(open("reimport.py").read())
+images, labels ,images_test, labels_test = ld.loadData(debug=True)
+images,images_test = nd.normalizeData(images, images_test, debug=True)
+gc.collect()
+
+n_x = images.shape[0]
+n_y = 10
+layerdims = [n_x,16,n_y]
+params = iw.initWeights(layerdims,"forRelu")
+
+#plt.scatter(images[150,:], images[151,:])
+#plt.show()
+
+
+===================installed libs
+pip3 install matplotlib
+pip3 install python-mnist
+pip3 install sklearn
+pip3 install scipy
+

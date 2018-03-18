@@ -23,6 +23,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DeepLearnTest.py" />
+    <Compile Include="initWeights.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="loadData.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="normalizeData.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="reimport.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="showData.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

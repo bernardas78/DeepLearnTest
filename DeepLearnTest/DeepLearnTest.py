@@ -8,3 +8,8 @@ Y =np.random.rand(4,2)
 
 Z = np.dot(X,Y)
 print(Z)
+
+import os
+cwd = os.getcwd()
+print (cwd)
+
