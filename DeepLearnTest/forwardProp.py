@@ -8,9 +8,13 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
     #       "sigmoid"
     #       "tanh"
     #       "relu"
+    #       "softmax"
     #   X - import matrix of shape [nx,m]
-    #Returns: aL (yhat) of size [n_y,m]
+    #Returns: aL (yhat) of size [ny,m]
+    #         za - Z's and A'ctivations of intermediate steps (used in backprop). Incl. A0 (input)
 
+    za = {}
+    za["A0"] = X
     al_prev = X
     for layer in range (0, L):
         Wl = params["W"+str(layer+1)]
@@ -28,12 +32,18 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
             al = np.tanh ( zl )
         elif activation == "relu":
             al = np.fmax (zl, np.zeros(zl.shape, dtype="float64"))
+        elif activation == "softmax":
+            al = np.exp (zl) / np.sum(np.exp (zl), axis=0, keepdims=True)
         else:
             raise Exception("forwardProp.py failed: unknown activation")
+
+        za["Z"+str(layer+1)] = zl
+        za["A"+str(layer+1)] = al
+
         if debug:
             print ("z",str(layer+1),".shape,a",str(layer+1),".shape:",zl.shape,al.shape,sep="")
         if printall:
             print("z",str(layer+1),":",zl,sep="")
             print("a",str(layer+1),":",al,sep="")
         al_prev = al
-    return al
+    return za,al

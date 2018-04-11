@@ -3,9 +3,8 @@ import sklearn.preprocessing
 import matplotlib.pyplot as plt
 
 def normalizeData(images, images_test, debug=False):
-    #data is a numpy array of size [nx X m]
+    #data is a numpy array of size [nx,m]
     #   it sets each input feature's mean to 0 and variance to 1
-    # np.std() throws MemoryError for big data sets, therefore, divide in batches in order to normalize
 
     images_scaled = sklearn.preprocessing.scale(images, axis=1, copy=False)
     images_test_scaled = sklearn.preprocessing.scale(images_test, axis=1, copy=False)
@@ -26,6 +25,7 @@ def normalizeData(images, images_test, debug=False):
     #means = np.mean(data, axis=1, keepdims=True)
     #variance_cum = np.zeros((nx,1))
 
+    # np.std() throws MemoryError for big data sets, therefore, divide in batches in order to normalize
     #for blockstart in range ( 0, m, blockSize):
         
     #    if blockstart + blockSize > m:

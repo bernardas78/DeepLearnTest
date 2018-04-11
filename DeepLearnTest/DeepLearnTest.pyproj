@@ -22,6 +22,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="backProp.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="computeCost.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DeepLearnTest.py" />
     <Compile Include="forwardProp.py">
       <SubType>Code</SubType>
@@ -42,6 +48,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_forwardProp.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test_matmul_2d3d.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
