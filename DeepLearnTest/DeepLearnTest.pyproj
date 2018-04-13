@@ -44,6 +44,9 @@
     <Compile Include="reimport.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="runModel.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="showData.py">
       <SubType>Code</SubType>
     </Compile>
@@ -51,6 +54,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_matmul_2d3d.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="updateParams.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

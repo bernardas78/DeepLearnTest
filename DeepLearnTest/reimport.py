@@ -11,6 +11,8 @@ import initWeights as iw
 import forwardProp as fp
 import computeCost as cc
 import backProp as bp
+import updateParams as up
+import runModel as rm
 
 def re():
     importlib.reload(ld)
@@ -19,3 +21,5 @@ def re():
     importlib.reload(fp)
     importlib.reload(cc)
     importlib.reload(bp)
+    importlib.reload(up)
+    importlib.reload(rm)

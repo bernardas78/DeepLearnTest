@@ -13,11 +13,6 @@ L=2
 layerdims = [n_x,16,n_y]
 params = iw.initWeights(layerdims,"forRelu")
 activations = ["relu","softmax"]
-za,yhat = fp.forwardProp(L, params, activations, images, debug=False)
-#yhat[:,0:5]
-#za.keys()
-#za["Z1"].shape
-#za["A2"].shape
 
 #reshape labels=[1,m] to y=[n_y,m]
 y = np.zeros((n_y,m), dtype="float64")
@@ -25,11 +20,7 @@ y[labels, np.arange(m)] = 1.
 #y[:,0:5]
 #labels[0,0:5]
 
-#compute cost
-cost = cc.computeCost(y, yhat, debug=False)
-
-#run backprop
-grads = bp.backProp(params, za, y, debug=True)
+rm.runModel(iter_count=10, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.001, debug=False)
 
 #plt.scatter(images[150,:], images[151,:])
 #plt.show()
