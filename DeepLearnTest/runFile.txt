@@ -2,6 +2,8 @@ cd c:\labs\DeepLearnTest\DeepLearnTest
 python
 
 exec(open("reimport.py").read())
+
+#read and normalize the data
 images, labels ,images_test, labels_test = ld.loadData(debug=True)
 images,images_test = nd.normalizeData(images, images_test, debug=True)
 gc.collect()
@@ -10,9 +12,6 @@ m = images.shape[1]
 n_x = images.shape[0]
 n_y = 10
 L=2
-layerdims = [n_x,16,n_y]
-params = iw.initWeights(layerdims,"forRelu")
-activations = ["relu","softmax"]
 
 #reshape labels=[1,m] to y=[n_y,m]
 y = np.zeros((n_y,m), dtype="float64")
@@ -20,7 +19,13 @@ y[labels, np.arange(m)] = 1.
 #y[:,0:5]
 #labels[0,0:5]
 
-rm.runModel(iter_count=10, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.001, debug=False)
+
+#initialize NN architecture
+layerdims = [n_x,16,n_y]
+params = iw.initWeights(layerdims,"forRelu")
+activations = ["relu","softmax"]
+
+rm.runModel(iter_count=10, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.01, debug=False, printcost=True)
 
 #plt.scatter(images[150,:], images[151,:])
 #plt.show()
