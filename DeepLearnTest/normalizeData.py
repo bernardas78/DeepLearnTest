@@ -1,17 +1,29 @@
 import numpy as np
 import sklearn.preprocessing
 import matplotlib.pyplot as plt
+import gc
 
-def normalizeData(images, images_test, debug=False):
-    #data is a numpy array of size [nx,m]
-    #   it sets each input feature's mean to 0 and variance to 1
+def normalizeData(data, debug=False):
+    #Sets each input feature's mean to 0 and variance to 1
+    #       data is a numpy array of size [nx,m]
+    #   Returns: 
+    #       array of same size [nx,m] where each input feature's mean = 0 and variance is 1
 
-    images_scaled = sklearn.preprocessing.scale(images, axis=1, copy=False)
-    images_test_scaled = sklearn.preprocessing.scale(images_test, axis=1, copy=False)
+    if debug:
+        print ("==Starting normalizeData.py")
+        print ("data unscaled.var:",np.var(data),"; .mean:",np.mean(data))
 
-    del images, images_test
+    data_scaled = sklearn.preprocessing.scale(data, axis=1, copy=False)
+    #images_test_scaled = sklearn.preprocessing.scale(images_test, axis=1, copy=False)
 
-    return images_scaled, images_test_scaled
+    if debug:
+        print ("data scaled.var:",np.var(data_scaled),"; .mean:",np.mean(data_scaled))
+        print ("==Ending normalizeData.py")
+
+    del data#, images_test
+    gc.collect()
+
+    return data_scaled#, images_test_scaled
 
     # m - number of training examples
     # nx - number of features

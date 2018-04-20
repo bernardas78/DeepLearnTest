@@ -3,15 +3,18 @@ python
 
 exec(open("reimport.py").read())
 
-#read and normalize the data
-images, labels ,images_test, labels_test = ld.loadData(debug=True)
-images,images_test = nd.normalizeData(images, images_test, debug=True)
-gc.collect()
+debug=True
+
+#read the data
+images, labels ,images_test, labels_test = ld.loadData(debug)
+
+#normalize the data
+images = nd.normalizeData(images, debug)
+images_test = nd.normalizeData(images_test, debug)
 
 m = images.shape[1]
 n_x = images.shape[0]
 n_y = 10
-L=2
 
 #reshape labels=[1,m] to y=[n_y,m]
 y = np.zeros((n_y,m), dtype="float64")
@@ -21,11 +24,12 @@ y[labels, np.arange(m)] = 1.
 
 
 #initialize NN architecture
-layerdims = [n_x,16,n_y]
+L=3
+layerdims = [n_x,256,16,n_y]
 params = iw.initWeights(layerdims,"forRelu")
-activations = ["relu","softmax"]
+activations = ["relu","relu","softmax"]
 
-rm.runModel(iter_count=10, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.01, debug=False, printcost=True)
+rm.runModel(iter_count=10, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.01, debug=debug, printcost=True)
 
 #plt.scatter(images[150,:], images[151,:])
 #plt.show()

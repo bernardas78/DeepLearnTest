@@ -12,9 +12,9 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
     #   params: dictionary of parameters; keys:
     #       W1,...,WL
     #       b1,...,bL
-    #   activations: list of activation functions
+    #   activations: list of activation functions, array of size L
     #   X: input of shape [nx,m]
-    #   y: correct labels of shape [ny,m]; values 0 or 1
+    #   y: correct labels of shape [n_y,m]; values 0. or 1.
     #   learning_rate:
     #   debug:
 
@@ -22,36 +22,34 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
 
     accuracies = []
     costs = []
-    plt.ion()
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    mline, = ax.plot([], costs, 'b-')
+    if printcost:
+        plt.ion()
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        mline, = ax.plot([], costs, 'b-')
 
     for iter in range (iter_count):
+        print ("==========ITER:", str(iter))
         za,yhat = fp.forwardProp(L, params, activations, X, debug=debug)
 	    #yhat[:,0:5]
 	    #za.keys()
 	    #za["Z1"].shape
 	    #za["A2"].shape
 
-	    #compute cost
+	    #compute cost,accuracy
         cost = cc.computeCost(y, yhat, debug=debug)
+        accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
+
+        accuracies = np.append(accuracies, accuracy)
+        costs = np.append(costs, cost)
+
         if printcost:
-            #compute accuracy
-            accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
-            print ("iter:", str(iter), "; cost:", cost, "; accuracy:", accuracy)
-
-            accuracies = np.append(accuracies, accuracy)
-            costs = np.append(costs, cost)
-            #print(costs)
-
+            #Draw costs
             mline.set_xdata( np.linspace(1,len(costs),len(costs)) )
             mline.set_ydata(costs)
-
             ax.autoscale_view()
             ax.relim()
-
             fig.canvas.draw()
             fig.canvas.flush_events()
 
@@ -60,7 +58,7 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
         grads = bp.backProp(L, activations, params, za, y, debug=debug)
 
 	    #update params
-        params = up.updateParams(L, params, grads, learning_rate)
+        params = up.updateParams(L, params, grads, learning_rate, debug=debug)
 
     #if printcost:
     #    plt.plot(range(len(costs)), costs)

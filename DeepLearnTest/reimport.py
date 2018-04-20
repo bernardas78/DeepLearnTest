@@ -1,6 +1,5 @@
 import importlib
 import numpy as np
-import gc
 import matplotlib.pyplot as plt
 
 #initial import. Calling 'exec(open("reimport.py").read())' from python command line will import these modules

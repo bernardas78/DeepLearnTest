@@ -14,6 +14,9 @@ def backProp(L, activations, params, za, y, debug=False):
     #           dW1, .., dWL - where L number of layers
     #           db1, .., dbL
 
+    if debug:
+        print ("==Starting backProp.py")
+
     grads = {}
     m = y.shape[1]
 
@@ -59,5 +62,14 @@ def backProp(L, activations, params, za, y, debug=False):
  
         grads["dW"+str(layer+1)] = dW
         grads["db"+str(layer+1)] = db
- 
+
+        if debug:
+            print ("dW"+str(layer+1),".shape:", dW.shape, "; db"+str(layer+1),".shape:", db.shape, sep="")
+            indexes_5rows = np.random.randint(0,dW.shape[0],5)
+            indexes_5cols = np.random.randint(0,dW.shape[1],5)
+            print ("dW"+str(layer+1),"[", indexes_5rows,",",indexes_5cols, "]: ", dW[indexes_5rows, indexes_5cols], sep="" )
+            print ("db"+str(layer+1),"[", indexes_5rows,",",0, "]: ", db[indexes_5rows, 0], sep="" )
+
+    if debug:
+        print ("==Finishing backProp.py")
     return grads
