@@ -52,7 +52,9 @@ def backProp(L, activations, params, za, y, debug=False):
             dZ = np.sum(dZ, axis=1)                                                                      # dZ2=y1*A2+y2*(A2-1)+y3*a2+...++yC*a2
         elif activation=="relu":
             dZ = np.zeros((nout,m),dtype="float64")
-            dZ[Z>0]=1.
+            dZ[Z>0] = dA[Z>0]
+        elif activation=="tanh":
+            dZ = np.multiply (dA, 1. - np.power( np.tanh(Z), 2)) 
         else:
             raise Exception("backProp.py failed: unknown activation")
         
@@ -69,6 +71,9 @@ def backProp(L, activations, params, za, y, debug=False):
             indexes_5cols = np.random.randint(0,dW.shape[1],5)
             print ("dW"+str(layer+1),"[", indexes_5rows,",",indexes_5cols, "]: ", dW[indexes_5rows, indexes_5cols], sep="" )
             print ("db"+str(layer+1),"[", indexes_5rows,",",0, "]: ", db[indexes_5rows, 0], sep="" )
+            #if layer==1:
+            #print("dZ"+str(layer+1),"[:,0]:",dZ[:,0])
+            #print("dA"+str(layer),"[:,0]:",dA[:,0])
 
     if debug:
         print ("==Finishing backProp.py")

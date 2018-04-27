@@ -3,7 +3,7 @@ python
 
 exec(open("reimport.py").read())
 
-debug=True
+debug=False
 
 #read the data
 images, labels ,images_test, labels_test = ld.loadData(debug)
@@ -24,12 +24,12 @@ y[labels, np.arange(m)] = 1.
 
 
 #initialize NN architecture
-L=3
-layerdims = [n_x,256,16,n_y]
+L=2
+layerdims = [n_x,100,n_y]
+activations = ["tanh","softmax"]
 params = iw.initWeights(layerdims,"forRelu")
-activations = ["relu","relu","softmax"]
 
-rm.runModel(iter_count=10, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.01, debug=debug, printcost=True)
+za, yhat, grads, params = rm.runModel(iter_count=1000, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.001, debug=debug, printcost=True)
 
 #plt.scatter(images[150,:], images[151,:])
 #plt.show()

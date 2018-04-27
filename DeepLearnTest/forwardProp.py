@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 def forwardProp(L, params, activations, X, debug=False, printall=False):
     #caclulates forward propagation of a neural network
@@ -28,8 +29,9 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
                 "; b",str(layer+1),".shape:",bl.shape,\
                 "; A",str(layer),".shape:",al_prev.shape,\
                 "; activation:",activation,sep="")
-            #print (,sep="")
+
         zl = np.add ( np.dot ( Wl, al_prev ), bl )
+
         if activation == "sigmoid":
             al = 1. / ( 1. + np.exp (-zl))
         elif activation == "tanh":
@@ -53,4 +55,5 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
 
     if debug:
         print ("==Finishing forwardProp.py")
+
     return za,al

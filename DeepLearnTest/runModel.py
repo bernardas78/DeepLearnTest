@@ -4,6 +4,7 @@ import forwardProp as fp
 import computeCost as cc
 import backProp as bp
 import updateParams as up
+import time
 
 def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=False, printcost=False):
     # Runs a model
@@ -23,6 +24,11 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
     accuracies = []
     costs = []
 
+    fp_time = 0.
+    cc_time = 0.
+    bp_time = 0.
+    up_time = 0.
+
     if printcost:
         plt.ion()
         fig = plt.figure()
@@ -31,14 +37,18 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
 
     for iter in range (iter_count):
         print ("==========ITER:", str(iter))
+        start = time.perf_counter()
         za,yhat = fp.forwardProp(L, params, activations, X, debug=debug)
+        fp_time += time.perf_counter() - start
 	    #yhat[:,0:5]
 	    #za.keys()
 	    #za["Z1"].shape
 	    #za["A2"].shape
 
 	    #compute cost,accuracy
+        start = time.perf_counter()
         cost = cc.computeCost(y, yhat, debug=debug)
+        cc_time += time.perf_counter() - start
         accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
 
         accuracies = np.append(accuracies, accuracy)
@@ -55,11 +65,23 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
 
 
 	    #run backprop
+        start = time.perf_counter()
         grads = bp.backProp(L, activations, params, za, y, debug=debug)
+        bp_time += time.perf_counter() - start
 
 	    #update params
+        start = time.perf_counter()
         params = up.updateParams(L, params, grads, learning_rate, debug=debug)
+        up_time += time.perf_counter() - start
 
+    print ("fp_time:",fp_time)
+    print ("cc_time:",cc_time)
+    print ("bp_time:",bp_time)
+    print ("up_time:",up_time)
+    print ("Final cost:", cost)
+    print ("Final accuracy:", accuracy)
     #if printcost:
     #    plt.plot(range(len(costs)), costs)
     #    plt.show()
+
+    return za, yhat, grads, params
