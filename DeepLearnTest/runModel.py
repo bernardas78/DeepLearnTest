@@ -6,6 +6,7 @@ import backProp as bp
 import updateParams as up
 import time
 
+#Starting changes for comparing several optimization techniques
 def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
     optimization_technique="GradientDescent",beta_momentum=None,\
     debug=False, printcost=False):
