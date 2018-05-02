@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f9d2eade-caba-4ce4-a8a3-d15033069729</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>DeepLearnTest.py</StartupFile>
+    <StartupFile>runModel.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>

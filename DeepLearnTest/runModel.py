@@ -6,7 +6,9 @@ import backProp as bp
 import updateParams as up
 import time
 
-def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=False, printcost=False):
+def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
+    optimization_technique="GradientDescent",beta_momentum=None,\
+    debug=False, printcost=False):
     # Runs a model
     #   iter_count - iteration count
     #   L - number of layers (excl. input)
@@ -17,17 +19,27 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
     #   X: input of shape [nx,m]
     #   y: correct labels of shape [n_y,m]; values 0. or 1.
     #   learning_rate:
+    #   minibach_size: size of a minibatch to train on; if not set - then set to full data set's size
+    #   optimization_technique: way of how params (W's and b's) are updated
+    #       one of ["GradientDescent","GradientDescentWithMomentum","RMSProp","Adam"]
+    #   beta_momentum: opt. technique GradientDescentWithMomentum, optimization parameter beta
     #   debug:
+    #   printcost: plot costs or not
 
     m = y.shape[1]
+    if minibach_size is None:
+        minibach_size = m
 
     accuracies = []
     costs = []
 
-    fp_time = 0.
-    cc_time = 0.
-    bp_time = 0.
-    up_time = 0.
+    #store optimization parameter values in previously calculated iterations
+    opt_params = {}
+
+    #fp_time = 0.
+    #cc_time = 0.
+    #bp_time = 0.
+    #up_time = 0.
 
     if printcost:
         plt.ion()
@@ -37,19 +49,30 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
 
     for iter in range (iter_count):
         print ("==========ITER:", str(iter))
-        start = time.perf_counter()
-        za,yhat = fp.forwardProp(L, params, activations, X, debug=debug)
-        fp_time += time.perf_counter() - start
-	    #yhat[:,0:5]
-	    #za.keys()
-	    #za["Z1"].shape
-	    #za["A2"].shape
 
-	    #compute cost,accuracy
-        start = time.perf_counter()
-        cost = cc.computeCost(y, yhat, debug=debug)
-        cc_time += time.perf_counter() - start
-        accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
+        #set current minibatch
+        iterations_per_epoch = int (np.ceil ( m / minibach_size))
+        iteration_within_epoch = np.mod ( iter, iterations_per_epoch)
+        smpl_start = iteration_within_epoch * minibach_size
+        smpl_end = np.minimum (m, (iteration_within_epoch + 1) * minibach_size )
+        X_minib = X[:,smpl_start:smpl_end]
+        y_minib = y[:,smpl_start:smpl_end]
+        m_minib = smpl_end - smpl_start
+        #print ("minib:[",smpl_start,",",smpl_end,"]",sep="")
+
+        #Forward prop
+        #start = time.perf_counter()
+        #za,yhat = fp.forwardProp(L, params, activations, X, debug=debug)
+        za,yhat = fp.forwardProp(L, params, activations, X_minib, debug=debug)
+        #fp_time += time.perf_counter() - start
+
+	    #Compute cost,accuracy
+        #start = time.perf_counter()
+        #cost = cc.computeCost(y, yhat, debug=debug)
+        cost = cc.computeCost(y_minib, yhat, debug=debug)
+        #cc_time += time.perf_counter() - start
+        #accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
+        accuracy = np.sum ( y_minib [ np.argmax(yhat, axis=0), range(m_minib) ] ) / m_minib
 
         accuracies = np.append(accuracies, accuracy)
         costs = np.append(costs, cost)
@@ -64,20 +87,23 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, debug=Fals
             fig.canvas.flush_events()
 
 
-	    #run backprop
-        start = time.perf_counter()
-        grads = bp.backProp(L, activations, params, za, y, debug=debug)
-        bp_time += time.perf_counter() - start
+	    #Backprop
+        #start = time.perf_counter()
+        grads = bp.backProp(L, activations, params, za, y_minib, debug=debug)
+        #bp_time += time.perf_counter() - start
 
-	    #update params
-        start = time.perf_counter()
-        params = up.updateParams(L, params, grads, learning_rate, debug=debug)
-        up_time += time.perf_counter() - start
+	    #Update params
+        #start = time.perf_counter()
+        #print ("opt_params.keys() BEFORE:",opt_params.keys())
+        params, opt_params = up.updateParams(L, params, grads, learning_rate,\
+            optimization_technique, beta_momentum, opt_params, debug=debug)
+        #print ("opt_params.keys() AFTER:",opt_params.keys())
+        #up_time += time.perf_counter() - start
 
-    print ("fp_time:",fp_time)
-    print ("cc_time:",cc_time)
-    print ("bp_time:",bp_time)
-    print ("up_time:",up_time)
+    #print ("fp_time:",fp_time)
+    #print ("cc_time:",cc_time)
+    #print ("bp_time:",bp_time)
+    #print ("up_time:",up_time)
     print ("Final cost:", cost)
     print ("Final accuracy:", accuracy)
     #if printcost:

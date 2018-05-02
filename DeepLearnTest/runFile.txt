@@ -6,7 +6,7 @@ exec(open("reimport.py").read())
 debug=False
 
 #read the data
-images, labels ,images_test, labels_test = ld.loadData(debug)
+images, labels, images_test, labels_test = ld.loadData(debug)
 
 #normalize the data
 images = nd.normalizeData(images, debug)
@@ -26,13 +26,13 @@ y[labels, np.arange(m)] = 1.
 #initialize NN architecture
 L=2
 layerdims = [n_x,100,n_y]
-activations = ["tanh","softmax"]
+activations = ["relu","softmax"]
 params = iw.initWeights(layerdims,"forRelu")
 
-za, yhat, grads, params = rm.runModel(iter_count=1000, L=L, params=params, activations=activations, X=images, y=y, learning_rate=0.001, debug=debug, printcost=True)
-
-#plt.scatter(images[150,:], images[151,:])
-#plt.show()
+za, yhat, grads, params = rm.runModel(iter_count=500, L=L, params=params, activations=activations,\
+	X=images, y=y, learning_rate=0.001, minibach_size=1024,\
+	optimization_technique="GradientDescentWithMomentum",beta_momentum=0.9,\
+	debug=debug, printcost=True)
 
 
 ===================installed libs

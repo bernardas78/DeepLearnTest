@@ -21,8 +21,8 @@ def loadData(debug=False):
     labels_test=np.reshape(np.array(labels_test),(1,len(labels_test)))
 
     #sample to 1K training samples
-    images = images[:,0:1000]
-    labels = labels[:,0:1000]
+    #images = images[:,0:1000]
+    #labels = labels[:,0:1000]
 
     if debug:
         print ("images.shape:",images.shape)
