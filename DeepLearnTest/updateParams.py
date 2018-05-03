@@ -1,7 +1,7 @@
 import numpy as np
 
 def updateParams(L, params, grads, learning_rate,\
-    optimization_technique="GradientDescent",beta_momentum=None,opt_params=None,\
+    optimization_technique="GradientDescent",beta_momentum=None,beta_rmsprop=None,opt_params=None,\
     debug=False):
     #   L - layer count (excl.input layer)
     #   params: dictionary of weights, contains keys:
@@ -14,12 +14,15 @@ def updateParams(L, params, grads, learning_rate,\
     #   optimization_technique: way of how params (W's and b's) are updated
     #       one of ["GradientDescent","GradientDescentWithMomentum","RMSProp","Adam"]
     #   beta_momentum: opt. technique GradientDescentWithMomentum, optimization parameter beta
+    #   beta_rmsprop: opt. technique RMSProp, optimization parameter beta2 (exp.weighted square averages)
     #   opt_params: optimization parameters, dictionary for previously calculated values.
     #       GradientDescent - nothing
     #       GradientDescentWithMomentum - keys:
-    #           dW_withMomentum_unbiased_prev - previously calulated dW'' with eliminated bias
-    #           db_withMomentum_unbiased_prev - .....................db''
-    #       RMSProp:
+    #           dW[layer]_withMomentum_unbiased_prev - previously calulated dW'' with eliminated bias, for each layer 1:L
+    #           db[layer]_withMomentum_unbiased_prev - .....................db''
+    #       RMSProp - keys:
+    #           SdW[layer] - previously calulated SdW, for each layer 1:L 
+    #           Sdb[layer] -                      Sdb
     #       Adam:
     #   debug:
     #
@@ -27,8 +30,9 @@ def updateParams(L, params, grads, learning_rate,\
     #     W1,...,WL - where L number of layers
     #     b1,...,bL
     
-    #debug=True #SET TEMPORARILY!!
+    debug=False #SET TEMPORARILY!!
 
+    epsilon = 1e-8
     if debug:
         print ("==Starting updateParams.py")
 
@@ -81,7 +85,22 @@ def updateParams(L, params, grads, learning_rate,\
             opt_params["db"+str(layer+1)+"_withMomentum_unbiased_prev"] = db_withMomentum_unbiased
             
         elif optimization_technique=="RMSProp":
-            raise Exception("updateParams.py failed: RMSProp optimization technique not implemented")
+            if "SdW"+str(layer+1) in opt_params.keys():
+                SdW_prev = opt_params["SdW"+str(layer+1)]
+                Sdb_prev = opt_params["Sdb"+str(layer+1)]
+            else:
+                SdW_prev = np.zeros(dW.shape)
+                Sdb_prev = np.zeros(db.shape)
+            SdW = beta_rmsprop * SdW_prev + (1-beta_rmsprop) * np.multiply (dW, dW)
+            Sdb = beta_rmsprop * Sdb_prev + (1-beta_rmsprop) * np.multiply (db, db)
+            if debug:
+                print ("SdW"+str(layer+1), ":", SdW[indexes_5rows,indexes_5cols])
+                print ("Sdb"+str(layer+1), ":", Sdb[indexes_5rows,0])
+            W -= dW / (np.sqrt(SdW) + epsilon) * learning_rate
+            b -= db / (np.sqrt(Sdb) + epsilon) * learning_rate
+            #store calculated SdW, Sdb for next iterations
+            opt_params["SdW"+str(layer+1)] = SdW
+            opt_params["Sdb"+str(layer+1)] = Sdb
         elif optimization_technique=="Adam":
             raise Exception("updateParams.py failed: Adam optimization technique not implemented")
         else:

@@ -7,7 +7,7 @@ import updateParams as up
 import time
 
 def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
-    optimization_technique="GradientDescent",beta_momentum=None,\
+    optimization_technique="GradientDescent",beta_momentum=None, beta_rmsprop=None,\
     debug=False, printcost=False):
     # Runs a model
     #   iter_count - iteration count
@@ -23,6 +23,7 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_s
     #   optimization_technique: way of how params (W's and b's) are updated
     #       one of ["GradientDescent","GradientDescentWithMomentum","RMSProp","Adam"]
     #   beta_momentum: opt. technique GradientDescentWithMomentum, optimization parameter beta
+    #   beta_rmsprop: opt. technique RMSProp, optimization parameter beta2 (exp.weighted square averages)
     #   debug:
     #   printcost: plot costs or not
 
@@ -96,7 +97,7 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_s
         #start = time.perf_counter()
         #print ("opt_params.keys() BEFORE:",opt_params.keys())
         params, opt_params = up.updateParams(L, params, grads, learning_rate,\
-            optimization_technique, beta_momentum, opt_params, debug=debug)
+            optimization_technique, beta_momentum, beta_rmsprop, opt_params, debug=debug)
         #print ("opt_params.keys() AFTER:",opt_params.keys())
         #up_time += time.perf_counter() - start
 
