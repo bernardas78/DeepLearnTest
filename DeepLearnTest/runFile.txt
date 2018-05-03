@@ -31,7 +31,8 @@ params = iw.initWeights(layerdims,"forRelu")
 
 za, yhat, grads, params = rm.runModel(iter_count=500, L=L, params=params, activations=activations,\
 	X=images, y=y, learning_rate=0.001, minibach_size=1024,\
-	optimization_technique="GradientDescentWithMomentum",beta_momentum=0.9,\
+	optimization_technique1="GradientDescent",beta_momentum1=None,\
+	optimization_technique2="GradientDescentWithMomentum",beta_momentum2=0.9,\
 	debug=debug, printcost=True)
 
 
