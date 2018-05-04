@@ -22,8 +22,8 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_s
     #   minibach_size: size of a minibatch to train on; if not set - then set to full data set's size
     #   optimization_technique: way of how params (W's and b's) are updated
     #       one of ["GradientDescent","GradientDescentWithMomentum","RMSProp","Adam"]
-    #   beta_momentum: opt. technique GradientDescentWithMomentum, optimization parameter beta
-    #   beta_rmsprop: opt. technique RMSProp, optimization parameter beta2 (exp.weighted square averages)
+    #   beta_momentum: opt. techniques GradientDescentWithMomentum, Adam; optimization parameter beta1
+    #   beta_rmsprop: opt. techniques RMSProp, Adam; optimization parameter beta2 (exp.weighted square averages)
     #   debug:
     #   printcost: plot costs or not
 
