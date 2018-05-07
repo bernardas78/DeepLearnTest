@@ -12,6 +12,7 @@ import computeCost as cc
 import backProp as bp
 import updateParams as up
 import runModel as rm
+import paramsResultsToFile as prtf
 
 def re():
     importlib.reload(ld)
@@ -22,3 +23,4 @@ def re():
     importlib.reload(bp)
     importlib.reload(up)
     importlib.reload(rm)
+    importlib.reload(prtf)

@@ -5,6 +5,7 @@ import computeCost as cc
 import backProp as bp
 import updateParams as up
 import time
+import paramsResultsToFile as prtf
 
 def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
     optimization_technique="GradientDescent",beta_momentum=None, beta_rmsprop=None,\
@@ -107,6 +108,20 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_s
     #print ("up_time:",up_time)
     print ("Final cost:", cost)
     print ("Final accuracy:", accuracy)
+
+    #Compute cost, accuracy for entire training data set
+    if True:
+        _, yhatFull = fp.forwardProp(L, params, activations, X, debug=False)
+        costFull = cc.computeCost(y, yhatFull, debug=debug)
+        accuracyFull = np.sum ( y [ np.argmax(yhatFull, axis=0), range(m) ] ) / m
+        print ("Final cost on full training set:", costFull)
+        print ("Final accuracy on full training set:", accuracyFull)
+
+    #output parameters and results to a file
+    if True:
+        prtf.paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
+            optimization_technique,beta_momentum, beta_rmsprop, costFull, accuracyFull)
+
     #if printcost:
     #    plt.plot(range(len(costs)), costs)
     #    plt.show()

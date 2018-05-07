@@ -29,10 +29,10 @@ layerdims = [n_x,100,n_y]
 activations = ["relu","softmax"]
 params = iw.initWeights(layerdims,"forRelu")
 
-za, yhat, grads, params = rm.runModel(iter_count=500, L=L, params=params, activations=activations,\
+za, yhat, grads, params = rm.runModel(iter_count=10, L=L, params=params, activations=activations,\
 	X=images, y=y, learning_rate=0.001, minibach_size=1024,\
 	optimization_technique="Adam", beta_momentum=0.9, beta_rmsprop=0.999,\
-	debug=debug, printcost=True)
+	debug=debug, printcost=False)
 
 #za, yhat, grads, params = rm.runModel(iter_count=1000, L=L, params=params, activations=activations,\
 #	X=images, y=y, learning_rate=0.001, minibach_size=1024,\

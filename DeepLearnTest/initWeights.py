@@ -12,6 +12,8 @@ def initWeights(layerdims, alg="forRelu", debug=False):
     if debug:
         print ("==Starting initWeights.py")
 
+    np.random.seed(1)
+
     params = {}
     for layer in range (1, len(layerdims)):
         n_l = layerdims[layer]
