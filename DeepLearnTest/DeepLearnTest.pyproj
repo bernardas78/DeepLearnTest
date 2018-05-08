@@ -32,6 +32,9 @@
     <Compile Include="forwardProp.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="initHypersRand.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="initWeights.py">
       <SubType>Code</SubType>
     </Compile>

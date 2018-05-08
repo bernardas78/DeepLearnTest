@@ -13,6 +13,7 @@ import backProp as bp
 import updateParams as up
 import runModel as rm
 import paramsResultsToFile as prtf
+import initHypersRand as ih
 
 def re():
     importlib.reload(ld)
@@ -24,3 +25,4 @@ def re():
     importlib.reload(up)
     importlib.reload(rm)
     importlib.reload(prtf)
+    importlib.reload(ih)
