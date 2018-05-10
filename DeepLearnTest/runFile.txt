@@ -24,23 +24,40 @@ y[labels, np.arange(m)] = 1.
 
 
 #initialize NN architecture
+learning_rate=0.001
 L=2
-layerdims = [n_x,100,n_y]
 activations = ["relu","softmax"]
-params = iw.initWeights(layerdims,"forRelu")
+layerdims = [n_x,100,n_y]
+optimization_technique="Adam"
+beta_momentum=0.9
+beta_rmsprop=0.999
 
-za, yhat, grads, params = rm.runModel(iter_count=10, L=L, params=params, activations=activations,\
-	X=images, y=y, learning_rate=0.001, minibach_size=1024,\
-	optimization_technique="Adam", beta_momentum=0.9, beta_rmsprop=0.999,\
-	debug=debug, printcost=False)
+for model in range(0,10):
+	#randomly initialize architecture and hyperparams
+	hypers = ih.initHypersRand(input_size=n_x)
+	learning_rate = hypers["learning_rate"]
+	L = hypers["L"]
+	activations = hypers["activations"]
+	layerdims = hypers["layerdims"]
+	optimization_technique = hypers["optimization_technique"]
+	beta_momentum = hypers["beta_momentum"]
+	beta_rmsprop = hypers["beta_rmsprop"]
+
+	#initialize weights
+	params = iw.initWeights(layerdims,"forRelu")
+
+	za, yhat, grads, params = rm.runModel(iter_count=100, L=L, params=params, activations=activations,\
+		X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
+		optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
+		debug=debug, printcost=False)
 
 #za, yhat, grads, params = rm.runModel(iter_count=1000, L=L, params=params, activations=activations,\
-#	X=images, y=y, learning_rate=0.001, minibach_size=1024,\
+#	X=images, y=y, learning_rate, minibach_size=1024,\
 #	optimization_technique="RMSProp", beta_momentum=None, beta_rmsprop=0.999,\
 #	debug=debug, printcost=True)
 
 #za, yhat, grads, params = rm.runModel(iter_count=1000, L=L, params=params, activations=activations,\
-#	X=images, y=y, learning_rate=0.001, minibach_size=1024,\
+#	X=images, y=y, learning_rate, minibach_size=1024,\
 #	optimization_technique="GradientDescentWithMomentum", beta_momentum=0.9, beta_rmsprop=None,\
 #	debug=debug, printcost=True)
 

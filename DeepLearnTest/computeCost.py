@@ -9,10 +9,10 @@ def computeCost(y, yhat, debug=False, printall=False):
     if debug:
         print ("==Starting computeCost.py")
 
-    loss = np.sum ( -np.multiply (y, np.log(yhat) ), axis=0, keepdims=True )
+    #for numerical stability, add epsilon to yhat when close to 0
+    yhat[yhat<1e-200] = 1e-200
 
-    #m = y.shape[1]
-    #assert (loss.shape == (1,m))
+    loss = np.sum ( -np.multiply (y, np.log(yhat) ), axis=0, keepdims=True )
 
     if debug:
         print("loss.shape:",loss.shape)

@@ -50,6 +50,9 @@
     <Compile Include="reimport.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="runFile.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runModel.py">
       <SubType>Code</SubType>
     </Compile>

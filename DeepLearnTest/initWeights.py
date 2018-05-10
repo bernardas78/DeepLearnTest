@@ -1,10 +1,12 @@
 import numpy as np
 
-def initWeights(layerdims, alg="forRelu", debug=False):
+def initWeights(layerdims, activations, debug=False):
     #initializes weights 
     #   e.g. layerdims = [5,4,3], where 5 = #input nodes; 3=#output nodes
-    #   alg = "forRelu" = sqrt (2/n[l-1]) 
-    #       = "xavier" = sqrt (1/n[l-1])
+    #   activations: array size layerdims-1 (excl.input), elements one of the values:
+    #       "relu" - use forRelu algorithm: sqrt (2/n[l-1]) 
+    #       "tanh" - use "xavier" algorithm: sqrt (1/n[l-1])
+    #       for others (e.g. softmax) - what to use?
     #   Returns:
     #    dictionary (W1, b1, W2, b2, ..., WL, bL) , where L = len(layerdims)-1
     #       e.g. W1=[4,5] b1=[4,1],  W2=[4,3] b2=[3,1]
@@ -19,12 +21,13 @@ def initWeights(layerdims, alg="forRelu", debug=False):
         n_l = layerdims[layer]
         n_l_minus = layerdims[layer-1]
         temp = np.random.randn(n_l, n_l_minus)
-        if alg=="forRelu":
+        if activations[layer-1]=="relu":
             params["W"+str(layer)] = temp * np.sqrt(2./n_l_minus)
-        elif alg=="xavier":
+        elif activations[layer-1]=="tanh":
             params["W"+str(layer)] = temp * np.sqrt(1./n_l_minus)
         else:
-            raise Exception("initWeights.py failed: unknown alg")
+            params["W"+str(layer)] = temp * np.sqrt(2./n_l_minus)
+        #    raise Exception("initWeights.py failed: unknown alg")
         params["b"+str(layer)] = np.zeros((n_l,1), dtype="float64")
         if debug:
             #print ("weights prior to scaling:",temp)

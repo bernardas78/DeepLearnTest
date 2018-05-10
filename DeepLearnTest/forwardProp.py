@@ -39,7 +39,9 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
         elif activation == "relu":
             al = np.fmax (zl, np.zeros(zl.shape, dtype="float64"))
         elif activation == "softmax":
-            al = np.exp (zl) / np.sum(np.exp (zl), axis=0, keepdims=True)
+            #for numerical stability, use "reduced" zl for exp
+            zl_temp = zl - np.max(zl, axis=0)
+            al = np.exp (zl_temp) / np.sum(np.exp (zl_temp), axis=0, keepdims=True)
         else:
             raise Exception("forwardProp.py failed: unknown activation")
 

@@ -50,7 +50,8 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_s
         mline, = ax.plot([], costs, 'b-')
 
     for iter in range (iter_count):
-        print ("==========ITER:", str(iter))
+        if debug:
+            print ("==========ITER:", str(iter))
 
         #set current minibatch
         iterations_per_epoch = int (np.ceil ( m / minibach_size))
@@ -106,14 +107,16 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_s
     #print ("cc_time:",cc_time)
     #print ("bp_time:",bp_time)
     #print ("up_time:",up_time)
-    print ("Final cost:", cost)
-    print ("Final accuracy:", accuracy)
+    if debug:
+        print ("Final cost:", cost)
+        print ("Final accuracy:", accuracy)
 
     #Compute cost, accuracy for entire training data set
     if True:
         _, yhatFull = fp.forwardProp(L, params, activations, X, debug=False)
         costFull = cc.computeCost(y, yhatFull, debug=debug)
         accuracyFull = np.sum ( y [ np.argmax(yhatFull, axis=0), range(m) ] ) / m
+    if debug:
         print ("Final cost on full training set:", costFull)
         print ("Final accuracy on full training set:", accuracyFull)
 
@@ -126,4 +129,4 @@ def runModel(iter_count, L, params, activations, X, y, learning_rate, minibach_s
     #    plt.plot(range(len(costs)), costs)
     #    plt.show()
 
-    return za, yhat, grads, params
+    return yhatFull, grads, params
