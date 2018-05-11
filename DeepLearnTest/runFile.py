@@ -54,19 +54,20 @@ for model in range(50):
 #beta_momentum=0.9
 #beta_rmsprop=0.999
 
+    
 learning_rate=0.01
-L=3
-activations = ["tanh","relu","softmax"]
-layerdims = [n_x,252,96,n_y]
+L=4
+activations = ["relu","relu","tanh","softmax"]
+layerdims = [n_x,177,93,28,n_y]
 optimization_technique="RMSProp"
-beta_momentum = 0.7171357197813091
-beta_rmsprop = 0.9990372968582053
+beta_momentum = 0.580156929093833
+beta_rmsprop = 0.999754127379942
 params = iw.initWeights(layerdims,activations)
-yhat, grads, params = rm.runModel(iter_count=500, L=L, params=params, activations=activations,\
+yhat, grads, params = rm.runModel(iter_count=100, L=L, params=params, activations=activations,\
     X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
     optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
-    debug=True, printcost=False)
-
+    debug=False, printcost=True)
+cc.computeCost(y, yhat)
 #yhat, grads, params = rm.runModel(iter_count=1000, L=L, params=params, activations=activations,\
 #	X=images, y=y, learning_rate, minibach_size=1024,\
 #	optimization_technique="RMSProp", beta_momentum=None, beta_rmsprop=0.999,\

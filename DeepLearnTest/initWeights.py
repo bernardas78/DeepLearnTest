@@ -14,7 +14,9 @@ def initWeights(layerdims, activations, debug=False):
     if debug:
         print ("==Starting initWeights.py")
 
+    #seed() always creates new values; seed(1) reproduces same
     np.random.seed(1)
+    #np.random.seed()
 
     params = {}
     for layer in range (1, len(layerdims)):

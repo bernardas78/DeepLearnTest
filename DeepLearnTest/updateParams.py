@@ -99,6 +99,8 @@ def updateParams(L, params, grads, learning_rate,\
                 print ("Sdb"+str(layer+1), ":", Sdb[indexes_4rows,0])
             W -= dW / (np.sqrt(SdW) + epsilon) * learning_rate
             b -= db / (np.sqrt(Sdb) + epsilon) * learning_rate
+            #print ("W"+str(layer+1),":",np.mean(W),np.max(W),np.min(W))
+            #print ("b"+str(layer+1),":",np.mean(b),np.max(b),np.min(b))
             #store calculated SdW, Sdb for next iterations
             opt_params["SdW"+str(layer+1)] = SdW
             opt_params["Sdb"+str(layer+1)] = Sdb

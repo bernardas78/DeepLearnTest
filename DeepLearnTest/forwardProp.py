@@ -31,6 +31,10 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
                 "; activation:",activation,sep="")
 
         zl = np.add ( np.dot ( Wl, al_prev ), bl )
+        #print ("a"+str(layer),":",np.mean(al_prev),np.max(al_prev),np.min(al_prev))
+        #print ("W"+str(layer+1),":",np.mean(Wl),np.max(Wl),np.min(Wl))
+        #print ("b"+str(layer+1),":",np.mean(bl),np.max(bl),np.min(bl))
+        #print ("z"+str(layer+1),":",np.mean(zl),np.max(zl),np.min(zl))
 
         if activation == "sigmoid":
             al = 1. / ( 1. + np.exp (-zl))
