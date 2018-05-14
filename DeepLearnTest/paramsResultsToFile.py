@@ -21,7 +21,7 @@ def paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
     for layer in range(0, L):
          layer_sizes[layer] = params["b"+str(layer+1)].shape[0]
 
-    file = open("..\\results1.csv","a")
+    file = open("..\\results.csv","a")
 
     strToWrite = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ";" + \
         str(iter_count) + ";" + \

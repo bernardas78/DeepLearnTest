@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>f9d2eade-caba-4ce4-a8a3-d15033069729</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>runModel.py</StartupFile>
+    <StartupFile>trainModel.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -54,6 +54,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="runModel.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="trainModel.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="showData.py">

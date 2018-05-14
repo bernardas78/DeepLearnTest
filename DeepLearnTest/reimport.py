@@ -11,6 +11,7 @@ import forwardProp as fp
 import computeCost as cc
 import backProp as bp
 import updateParams as up
+import trainModel as tm
 import runModel as rm
 import paramsResultsToFile as prtf
 import initHypersRand as ih
@@ -23,6 +24,7 @@ def re():
     importlib.reload(cc)
     importlib.reload(bp)
     importlib.reload(up)
+    importlib.reload(tm)
     importlib.reload(rm)
     importlib.reload(prtf)
     importlib.reload(ih)
