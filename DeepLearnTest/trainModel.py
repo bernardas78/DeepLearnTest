@@ -9,6 +9,7 @@ import time
 
 def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
     optimization_technique="GradientDescent",beta_momentum=None, beta_rmsprop=None,\
+    regularization_technique="None", lambd=0.,\
     debug=False, drawcost=False, evaltest=False, Xtest=None, ytest=None):
     # Runs a model
     #   iter_count - iteration count
@@ -30,6 +31,9 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
     #   evaltest: evaluate model on test set on every iteration and include in graph as red line (or not)
     #   Xtest: X test, used when evaltest=True
     #   ytest: y test, used when evaltest=True
+    #   regularization_technique: way to reduce overfitting to train set
+    #       one of: ["None","L2","Dropout","Stoppoint"]
+    #   lambd: hyperparam lambda for L2 regularization technique
 
     m = y.shape[1]
     if minibach_size is None:
@@ -79,22 +83,22 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
         za,yhat = fp.forwardProp(L, params, activations, X_minib, debug=debug)
         #fp_time += time.perf_counter() - start
 
-	    #Compute cost,accuracy
-        #start = time.perf_counter()
-        #cost = cc.computeCost(y, yhat, debug=debug)
-        cost = cc.computeCost(y_minib, yhat, debug=debug)
-        #cc_time += time.perf_counter() - start
-        #accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
 
-        if evaltest:
-            _,yhattest = fp.forwardProp(L, params, activations, Xtest, debug=False)
-            costtest = cc.computeCost(ytest, yhattest, debug=False)
-            coststest = np.append(coststest, costtest)
 
         if drawcost:
+    	    #Compute cost,accuracy
+            #start = time.perf_counter()
+            #cost = cc.computeCost(y, yhat, debug=debug)
+            cost = cc.computeCost(y_minib, yhat, debug=debug)
+            #cc_time += time.perf_counter() - start
+            costs = np.append(costs, cost)
+            #accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
             #accuracy = np.sum ( y_minib [ np.argmax(yhat, axis=0), range(m_minib) ] ) / m_minib
             #accuracies = np.append(accuracies, accuracy)
-            costs = np.append(costs, cost)
+            if evaltest:
+                _,yhattest = fp.forwardProp(L, params, activations, Xtest, debug=False)
+                costtest = cc.computeCost(ytest, yhattest, debug=False)
+                coststest = np.append(coststest, costtest)
 
             #Draw costs
             mline.set_xdata( np.linspace(1,len(costs),len(costs)) )
@@ -110,7 +114,7 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
 
 	    #Backprop
         #start = time.perf_counter()
-        grads = bp.backProp(L, activations, params, za, y_minib, debug=debug)
+        grads = bp.backProp(L, activations, params, za, y_minib, regularization_technique, lambd, debug=debug)
         #bp_time += time.perf_counter() - start
 
 	    #Update params

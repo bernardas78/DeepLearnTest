@@ -2,7 +2,8 @@ import numpy as np
 import datetime
 
 def paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
-    optimization_technique,beta_momentum, beta_rmsprop, cost, accuracy):
+    optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd,\
+    costTrain, accuracyTrain, costTest, accuracyTest):
     #Output model parameters and results to a results.csv
     #   iter_count - number of iterations model ran
     #   L - number of layers excl. input
@@ -14,8 +15,12 @@ def paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
     #       one of ["GradientDescent","GradientDescentWithMomentum","RMSProp","Adam"]
     #   beta_momentum: opt. techniques GradientDescentWithMomentum, Adam; optimization parameter beta1
     #   beta_rmsprop: opt. techniques RMSProp, Adam; optimization parameter beta2 (exp.weighted square averages)
-    #   cost
-    #   accuracy 
+    #   regularization_technique
+    #   lambd: lambda, hyperparameter for regulartization technique L2
+    #   costTrain
+    #   accuracyTrain 
+    #   costTest
+    #   accuracyTest
 
     layer_sizes = np.zeros((L),'int')
     for layer in range(0, L):
@@ -32,8 +37,12 @@ def paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
         str(optimization_technique) + ";" + \
         str(beta_momentum) + ";" + \
         str(beta_rmsprop) + ";" + \
-        str(cost) + ";" + \
-        str(accuracy) + "\n"
+        regularization_technique + ";" + \
+        str(lambd) + ";" + \
+        str(costTrain) + ";" + \
+        str(accuracyTrain) + ";" + \
+        str(costTest) + ";" + \
+        str(accuracyTest) + "\n"
     file.write(strToWrite)
 
     file.close() 

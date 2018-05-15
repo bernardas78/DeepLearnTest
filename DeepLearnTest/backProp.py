@@ -1,6 +1,6 @@
 import numpy as np
 
-def backProp(L, activations, params, za, y, debug=False):
+def backProp(L, activations, params, za, y, regularization_technique="None", lambd=0., debug=False):
     #   L - layer count (excl.input layer)
     #   activations - list of activation functions, left to right, e.g. ["relu","relu","softmax"]
     #   params - dictionary containing keys:
@@ -10,6 +10,11 @@ def backProp(L, activations, params, za, y, debug=False):
     #       A0, ... AL - where L number of layers
     #       Z1, ... ZL
     #   y - actual values of size [n_y, m]
+    #   regularization_technique: way to reduce overfitting to train set
+    #       one of: ["None","L2","Dropout","Stoppoint"]
+    #   lambd: hyperparam lambda for L2 regularization technique
+    #   debug:
+    #
     #Returns: grads (dictionary) which contains keys:
     #           dW1, .., dWL - where L number of layers
     #           db1, .., dbL
@@ -62,6 +67,13 @@ def backProp(L, activations, params, za, y, debug=False):
         db = 1./m * np.sum(dZ, axis=1, keepdims=True)
         dA = np.dot (W.T, dZ)
  
+        if regularization_technique=="None":
+            pass
+        elif regularization_technique=="L2":
+            dW += lambd / m * W 
+        else:
+            raise Exception("updateParams.py failed: unknown regularization technique")
+
         grads["dW"+str(layer+1)] = dW
         grads["db"+str(layer+1)] = db
 

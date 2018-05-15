@@ -1,8 +1,7 @@
 import numpy as np
 
 def updateParams(L, params, grads, learning_rate,\
-    optimization_technique="GradientDescent",beta_momentum=None,beta_rmsprop=None,opt_params=None,\
-    debug=False):
+    optimization_technique="GradientDescent",beta_momentum=None,beta_rmsprop=None,opt_params=None, debug=False):
     #   L - layer count (excl.input layer)
     #   params: dictionary of weights, contains keys:
     #     W1,...,WL - where L number of layers
@@ -147,7 +146,6 @@ def updateParams(L, params, grads, learning_rate,\
             opt_params["Sdb"+str(layer+1)+"_prev"] = Sdb
         else:
             raise Exception("updateParams.py failed: unknown optimization technique")
-
 
         params["W"+str(layer+1)] = W
         params["b"+str(layer+1)] = b

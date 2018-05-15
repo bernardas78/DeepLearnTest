@@ -27,8 +27,8 @@ ytest[labels_test, np.arange(mtest)] = 1.
 
 #Choosing the best model: randomly initialize hyperparams and architecture
 for model in range(50):
-    print ("Running model:" + str(model))
-    
+    print ("Running model:" + str(model))  
+      
     #randomly initialize architecture and hyperparams
     hypers = ih.initHypersRand(input_size=n_x)
     learning_rate = hypers["learning_rate"]
@@ -47,6 +47,7 @@ for model in range(50):
     params = tm.trainModel(iter_count=iter_count, L=L, params=params, activations=activations,\
         X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
         optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
+        regularization_technique="None", lambd=0.,\
         debug=debug, drawcost=False, evaltest=False)
     
     #run model to get cost, accuracy
@@ -54,20 +55,11 @@ for model in range(50):
     
     #output hyper params and results to a file
     prtf.paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
-        optimization_technique,beta_momentum, beta_rmsprop, costTrain, accuracyTrain)
+        optimization_technique,beta_momentum, beta_rmsprop, 0., costTrain, accuracyTrain, 0., 0.)
 
 
 
-#initialize NN architecture
-#learning_rate=0.001
-#L=2
-#activations = ["relu","softmax"]
-#layerdims = [n_x,100,n_y]
-#optimization_technique="Adam"
-#beta_momentum=0.9
-#beta_rmsprop=0.999
-
-    
+#train and evaluate a single model with pre-defined hypers    
 learning_rate=0.01
 L=2
 activations = ["tanh","softmax"]
@@ -76,25 +68,42 @@ optimization_technique="Adam"
 beta_momentum = 0.427799355026437
 beta_rmsprop = 0.999462202362609
 params = iw.initWeights(layerdims,activations)
-params = tm.trainModel(iter_count=20, L=L, params=params, activations=activations,\
+params = tm.trainModel(iter_count=500, L=L, params=params, activations=activations,\
     X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
     optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
-    debug=False, drawcost=True, evaltest=True, Xtest=images_test, ytest=ytest)
+    regularization_technique="L2", lambd=10.1,\
+    debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
 print ("Train set results:")
 _,_,_ = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=True)
 print ("Test set results:")
 _,_,_ = rm.runModel(L, params, activations, X=images_test, y=ytest, debug=False, printcost=True)
-#cc.computeCost(y, yhat)
-#params = tm.trainModel(iter_count=1000, L=L, params=params, activations=activations,\
-#	X=images, y=y, learning_rate, minibach_size=1024,\
-#	optimization_technique="RMSProp", beta_momentum=None, beta_rmsprop=0.999,\
-#	debug=debug, drawcost=True)
 
-#params = tm.trainModel(iter_count=1000, L=L, params=params, activations=activations,\
-#	X=images, y=y, learning_rate, minibach_size=1024,\
-#	optimization_technique="GradientDescentWithMomentum", beta_momentum=0.9, beta_rmsprop=None,\
-#	debug=debug, drawcost=True)
 
+#Choosing the best lambda for L2 regularization:
+learning_rate=0.01
+L=2
+activations = ["tanh","softmax"]
+layerdims = [n_x,239,n_y]
+optimization_technique="Adam"
+beta_momentum = 0.427799355026437
+beta_rmsprop = 0.999462202362609
+regularization_technique="L2"
+iter_count=500
+for model in range(100):
+    print ("Running model:" + str(model))  
+    np.random.seed()
+    lambd = np.random.rand() #lambd=[0;1]; median(lambd)=0.5
+    params = iw.initWeights(layerdims,activations)
+    params = tm.trainModel(iter_count=iter_count, L=L, params=params, activations=activations,\
+        X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
+        optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
+        regularization_technique=regularization_technique, lambd=lambd,\
+        debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
+    _,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=False)
+    _,costTest,accuracyTest = rm.runModel(L, params, activations, X=images_test, y=ytest, debug=False, printcost=False)
+    #output hyper params and results to a file
+    prtf.paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
+        optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd, costTrain, accuracyTrain, costTest, accuracyTest)
 
 
 ===================installed libs
