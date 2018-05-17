@@ -11,7 +11,7 @@ def backProp(L, activations, params, za, y, regularization_technique="None", lam
     #       Z1, ... ZL
     #   y - actual values of size [n_y, m]
     #   regularization_technique: way to reduce overfitting to train set
-    #       one of: ["None","L2","Dropout","Stoppoint"]
+    #       one of: ["None","L2","Dropout"]
     #   lambd: hyperparam lambda for L2 regularization technique
     #   debug:
     #
@@ -71,6 +71,8 @@ def backProp(L, activations, params, za, y, regularization_technique="None", lam
             pass
         elif regularization_technique=="L2":
             dW += lambd / m * W 
+        elif regularization_technique=="Dropout":
+            pass
         else:
             raise Exception("updateParams.py failed: unknown regularization technique")
 

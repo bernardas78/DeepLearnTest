@@ -2,7 +2,7 @@ import numpy as np
 import datetime
 
 def paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
-    optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd,\
+    optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd, keep_prob,\
     costTrain, accuracyTrain, costTest, accuracyTest):
     #Output model parameters and results to a results.csv
     #   iter_count - number of iterations model ran
@@ -16,7 +16,8 @@ def paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
     #   beta_momentum: opt. techniques GradientDescentWithMomentum, Adam; optimization parameter beta1
     #   beta_rmsprop: opt. techniques RMSProp, Adam; optimization parameter beta2 (exp.weighted square averages)
     #   regularization_technique
-    #   lambd: lambda, hyperparameter for regulartization technique L2
+    #   lambd: lambda, hyperparameter for regularization technique L2
+    #   keep_prob: vector size L, used for regularization technique Dropout
     #   costTrain
     #   accuracyTrain 
     #   costTest
@@ -39,6 +40,7 @@ def paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
         str(beta_rmsprop) + ";" + \
         regularization_technique + ";" + \
         str(lambd) + ";" + \
+        str(keep_prob) + ";" + \
         str(costTrain) + ";" + \
         str(accuracyTrain) + ";" + \
         str(costTest) + ";" + \

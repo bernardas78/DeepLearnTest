@@ -67,11 +67,12 @@ layerdims = [n_x,239,n_y]
 optimization_technique="Adam"
 beta_momentum = 0.427799355026437
 beta_rmsprop = 0.999462202362609
+keep_prob = np.append( np.repeat(1.0, L-1), 1.)
 params = iw.initWeights(layerdims,activations)
 params = tm.trainModel(iter_count=500, L=L, params=params, activations=activations,\
     X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
     optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
-    regularization_technique="L2", lambd=10.1,\
+    regularization_technique="Dropout", lambd=0., keep_prob=keep_prob,\
     debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
 print ("Train set results:")
 _,_,_ = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=True)
@@ -104,6 +105,54 @@ for model in range(100):
     #output hyper params and results to a file
     prtf.paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
         optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd, costTrain, accuracyTrain, costTest, accuracyTest)
+
+
+#train and evaluate a single model L2 with various architecture  
+learning_rate=0.01
+L=7
+activations = ["relu","tanh","relu","tanh","relu","tanh","softmax"]
+layerdims = [n_x,600,500,400,300,200,100,n_y]
+optimization_technique="GradientDescent"
+beta_momentum = None
+beta_rmsprop = None
+params = iw.initWeights(layerdims,activations)
+params = tm.trainModel(iter_count=500, L=L, params=params, activations=activations,\
+    X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
+    optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
+    regularization_technique="L2", lambd=0.,\
+    debug=False, drawcost=True, evaltest=True, Xtest=images_test, ytest=ytest)
+print ("Train set results:")
+_,_,_ = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=True)
+print ("Test set results:")
+_,_,_ = rm.runModel(L, params, activations, X=images_test, y=ytest, debug=False, printcost=True)
+
+
+#Choosing the best keep_prob for Dropout regularization:
+learning_rate=0.01
+L=2
+activations = ["tanh","softmax"]
+layerdims = [n_x,239,n_y]
+optimization_technique="Adam"
+beta_momentum = 0.427799355026437
+beta_rmsprop = 0.999462202362609
+regularization_technique="Dropout"
+iter_count=1000
+for model in range(50):
+    print ("Running model:" + str(model))  
+    np.random.seed()
+    keep_prob = np.append ( np.repeat (np.random.rand(), L-1), 1.) #keep_prob=[0;1]; median(keep_prob)=0.5
+    params = iw.initWeights(layerdims,activations)
+    params = tm.trainModel(iter_count=iter_count, L=L, params=params, activations=activations,\
+        X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
+        optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
+        regularization_technique=regularization_technique, lambd=0., keep_prob=keep_prob,\
+        debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
+    _,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=False)
+    _,costTest,accuracyTest = rm.runModel(L, params, activations, X=images_test, y=ytest, debug=False, printcost=False)
+    #output hyper params and results to a file
+    prtf.paramsResultsToFile(iter_count, L, params, activations, learning_rate,\
+        optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd=0., keep_prob=keep_prob,\
+        costTrain=costTrain, accuracyTrain=accuracyTrain, costTest=costTest, accuracyTest=accuracyTest)
 
 
 ===================installed libs

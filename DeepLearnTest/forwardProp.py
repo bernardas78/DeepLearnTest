@@ -1,7 +1,9 @@
 import numpy as np
 import time
 
-def forwardProp(L, params, activations, X, debug=False, printall=False):
+def forwardProp(L, params, activations, X, \
+    regularization_technique="None", keep_prob=None, \
+    debug=False, printall=False):
     #caclulates forward propagation of a neural network
     #   L - layer count (excl.input layer)
     #   params - dictionary containing "W1", "b1",..."WL", "bL" parameters
@@ -11,6 +13,11 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
     #       "relu"
     #       "softmax"
     #   X - import matrix of shape [nx,m]
+    #   regularization_technique: way to reduce overfitting to train set 
+    #       one of: ["None","L2","Dropout"]
+    #   keep_prob: vector of probabilities to keep node, size L (last value should be 1.); used in Dropout regularization
+    #   debug:
+    #   printall: 
     #Returns: aL (yhat) of size [ny,m]
     #         za - Z's and A'ctivations of intermediate steps (used in backprop). Incl. A0 (input)
 
@@ -49,14 +56,32 @@ def forwardProp(L, params, activations, X, debug=False, printall=False):
         else:
             raise Exception("forwardProp.py failed: unknown activation")
 
+        #Dropout regularization
+        if regularization_technique=="None":
+            pass
+        elif regularization_technique=="L2":
+            pass 
+        elif regularization_technique=="Dropout":
+            dl = np.random.rand(al.shape[0], al.shape[1]) < keep_prob[layer]
+            al = np.multiply (al, dl) / keep_prob[layer]
+        else:
+            raise Exception("forwardProp.py failed: unknown regularization technique")
+
+
         za["Z"+str(layer+1)] = zl
         za["A"+str(layer+1)] = al
 
         if debug:
             print ("Z",str(layer+1),".shape:",zl.shape,"; A",str(layer+1),".shape:",al.shape,sep="")
+            indexes_10hunits = np.random.randint(0,al.shape[0],10)
+            indexes_10samples = np.random.randint(0,al.shape[1],10)
+            print ("Z"+str(layer+1),"[", indexes_10hunits,",",indexes_10samples, "]: ", zl[indexes_10hunits, indexes_10samples], sep="" )
+            print ("A"+str(layer+1),"[", indexes_10hunits,",",indexes_10samples, "]: ", al[indexes_10hunits, indexes_10samples], sep="" )
+
         if printall:
             print("z",str(layer+1),":",zl,sep="")
             print("a",str(layer+1),":",al,sep="")
+
         al_prev = al
 
     if debug:

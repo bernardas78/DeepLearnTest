@@ -9,7 +9,7 @@ import time
 
 def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
     optimization_technique="GradientDescent",beta_momentum=None, beta_rmsprop=None,\
-    regularization_technique="None", lambd=0.,\
+    regularization_technique="None", lambd=0., keep_prob=None,\
     debug=False, drawcost=False, evaltest=False, Xtest=None, ytest=None):
     # Runs a model
     #   iter_count - iteration count
@@ -34,6 +34,7 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
     #   regularization_technique: way to reduce overfitting to train set
     #       one of: ["None","L2","Dropout","Stoppoint"]
     #   lambd: hyperparam lambda for L2 regularization technique
+    #   keep_prob: vector of probabilities to keep node, size L (last value should be 1.); used in Dropout regularization
 
     m = y.shape[1]
     if minibach_size is None:
@@ -80,7 +81,7 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
         #Forward prop
         #start = time.perf_counter()
         #za,yhat = fp.forwardProp(L, params, activations, X, debug=debug)
-        za,yhat = fp.forwardProp(L, params, activations, X_minib, debug=debug)
+        za,yhat = fp.forwardProp(L, params, activations, X_minib, regularization_technique, keep_prob, debug=debug)
         #fp_time += time.perf_counter() - start
 
 
@@ -96,7 +97,7 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
             #accuracy = np.sum ( y_minib [ np.argmax(yhat, axis=0), range(m_minib) ] ) / m_minib
             #accuracies = np.append(accuracies, accuracy)
             if evaltest:
-                _,yhattest = fp.forwardProp(L, params, activations, Xtest, debug=False)
+                _,yhattest = fp.forwardProp(L, params, activations, Xtest, regularization_technique="None", keep_prob=None, debug=False)
                 costtest = cc.computeCost(ytest, yhattest, debug=False)
                 coststest = np.append(coststest, costtest)
 

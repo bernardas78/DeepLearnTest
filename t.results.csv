@@ -1,1 +1,1 @@
-Date/Time;#Iter;#Layers;#Units;Activations;Learning rate;Opt.technique;Beta1(GradMom,Adam);Beta2(RMSprp,Adam);Reg.Tech;lambda(L2);CostTrain;AccTrain;CostTest;AccTest
+Date/Time;#Iter;#Layers;#Units;Activations;Learning rate;Opt.technique;Beta1(GradMom,Adam);Beta2(RMSprp,Adam);Reg.Tech;lambda(L2);keep_prob(Dropout);CostTrain;AccTrain;CostTest;AccTest

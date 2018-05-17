@@ -16,7 +16,7 @@ def runModel(L, params, activations, X, y, debug=False, printcost=False):
 
     m = y.shape[1]
 
-    _, yhat = fp.forwardProp(L, params, activations, X, debug=debug)
+    _, yhat = fp.forwardProp(L, params, activations, X, regularization_technique="None", keep_prob=None, debug=debug)
     cost = cc.computeCost(y, yhat, debug=debug)
     accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
 
