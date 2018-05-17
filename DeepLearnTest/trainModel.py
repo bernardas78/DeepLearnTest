@@ -6,6 +6,8 @@ import backProp as bp
 import updateParams as up
 import time
 #import paramsResultsToFile as prtf
+import runModel as rm
+import paramsResultsToFile as prtf
 
 def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
     optimization_technique="GradientDescent",beta_momentum=None, beta_rmsprop=None,\
@@ -84,8 +86,6 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
         za,yhat = fp.forwardProp(L, params, activations, X_minib, regularization_technique, keep_prob, debug=debug)
         #fp_time += time.perf_counter() - start
 
-
-
         if drawcost:
     	    #Compute cost,accuracy
             #start = time.perf_counter()
@@ -112,7 +112,6 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
             fig.canvas.draw()
             fig.canvas.flush_events()
 
-
 	    #Backprop
         #start = time.perf_counter()
         grads = bp.backProp(L, activations, params, za, y_minib, regularization_technique, lambd, debug=debug)
@@ -125,6 +124,16 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
             optimization_technique, beta_momentum, beta_rmsprop, opt_params, debug=debug)
         #print ("opt_params.keys() AFTER:",opt_params.keys())
         #up_time += time.perf_counter() - start
+
+        ##write intermediate results to file
+        #if np.mod(iter, 20)==0:
+        #    _,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=X, y=y, debug=False, printcost=False)
+        #    _,costTest,accuracyTest = rm.runModel(L, params, activations, X=Xtest, y=ytest, debug=False, printcost=False)
+        #    #output hyper params and results to a file
+        #    prtf.paramsResultsToFile(iter, L, params, activations, learning_rate,\
+        #        optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd=0., keep_prob=keep_prob,\
+        #        costTrain=costTrain, accuracyTrain=accuracyTrain, costTest=costTest, accuracyTest=accuracyTest)
+
 
     #print ("fp_time:",fp_time)
     #print ("cc_time:",cc_time)

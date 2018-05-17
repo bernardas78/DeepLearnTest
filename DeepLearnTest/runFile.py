@@ -107,7 +107,7 @@ for model in range(100):
         optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd, costTrain, accuracyTrain, costTest, accuracyTest)
 
 
-#train and evaluate a single model L2 with various architecture  
+#train and evaluate a single model L2 with deep network
 learning_rate=0.01
 L=7
 activations = ["relu","tanh","relu","tanh","relu","tanh","softmax"]
@@ -136,7 +136,7 @@ optimization_technique="Adam"
 beta_momentum = 0.427799355026437
 beta_rmsprop = 0.999462202362609
 regularization_technique="Dropout"
-iter_count=1000
+iter_count=500
 for model in range(50):
     print ("Running model:" + str(model))  
     np.random.seed()
@@ -154,6 +154,54 @@ for model in range(50):
         optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd=0., keep_prob=keep_prob,\
         costTrain=costTrain, accuracyTrain=accuracyTrain, costTest=costTest, accuracyTest=accuracyTest)
 
+#single model using Dropout
+learning_rate=0.01
+L=2
+activations = ["tanh","softmax"]
+layerdims = [n_x,239,n_y]
+optimization_technique="Adam"
+beta_momentum = 0.427799355026437
+beta_rmsprop = 0.999462202362609
+regularization_technique="Dropout"
+iter_count=5000
+keep_prob = np.append ( np.repeat (0.5, L-1), 1.) #keep_prob=[0;1]; median(keep_prob)=0.5
+params = iw.initWeights(layerdims,activations)
+params = tm.trainModel(iter_count=iter_count, L=L, params=params, activations=activations,\
+    X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
+    optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
+    regularization_technique=regularization_technique, lambd=0., keep_prob=keep_prob,\
+    debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
+_,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=True)
+_,costTest,accuracyTest = rm.runModel(L, params, activations, X=images_test, y=ytest, debug=False, printcost=True)
+
+
+#Choosing the best iteration count (Stoppoint):
+learning_rate=0.01
+L=2
+activations = ["tanh","softmax"]
+layerdims = [n_x,239,n_y]
+optimization_technique="Adam"
+beta_momentum = 0.427799355026437
+beta_rmsprop = 0.999462202362609
+regularization_technique="Dropout"
+iter_count=20
+params = iw.initWeights(layerdims,activations)
+for model in range(250):
+    print ("Running model:" + str(model))  
+    np.random.seed()
+    keep_prob = np.append ( np.repeat (0.7, L-1), 1.) #keep_prob=[0;1]; median(keep_prob)=0.5
+    params = tm.trainModel(iter_count=iter_count, L=L, params=params, activations=activations,\
+        X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
+        optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
+        regularization_technique=regularization_technique, lambd=0., keep_prob=keep_prob,\
+        debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
+    _,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=False)
+    _,costTest,accuracyTest = rm.runModel(L, params, activations, X=images_test, y=ytest, debug=False, printcost=False)
+    
+    #output hyper params and results to a file
+    prtf.paramsResultsToFile(iter_count * (model+1), L, params, activations, learning_rate,\
+        optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd=0., keep_prob=keep_prob,\
+        costTrain=costTrain, accuracyTrain=accuracyTrain, costTest=costTest, accuracyTest=accuracyTest)
 
 ===================installed libs
 pip3 install matplotlib

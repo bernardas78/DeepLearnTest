@@ -1,3 +1,1 @@
 Date/Time;#Iter;#Layers;#Units;Activations;Learning rate;Opt.technique;Beta1(GradMom,Adam);Beta2(RMSprp,Adam);Reg.Tech;lambda(L2);keep_prob(Dropout);CostTrain;AccTrain;CostTest;AccTest
-2018-05-17 08:48:49;1000;2;[239  10];['tanh', 'softmax'];0.01;Adam;0.427799355026437;0.999462202362609;Dropout;0.0;[0.67231416 1.        ];0.012599998148091686;0.9965166666666667;0.14811916870752453;0.9662
-2018-05-17 08:50:20;1000;2;[239  10];['tanh', 'softmax'];0.01;Adam;0.427799355026437;0.999462202362609;Dropout;0.0;[0.6008847 1.       ];0.016697722213628977;0.99485;0.1445920193502645;0.9651
