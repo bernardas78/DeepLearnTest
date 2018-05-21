@@ -15,6 +15,7 @@ import trainModel as tm
 import runModel as rm
 import paramsResultsToFile as prtf
 import initHypersRand as ih
+import plotCosts as pc
 
 def re():
     importlib.reload(ld)
@@ -28,3 +29,4 @@ def re():
     importlib.reload(rm)
     importlib.reload(prtf)
     importlib.reload(ih)
+    importlib.reload(pc)

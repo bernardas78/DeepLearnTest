@@ -47,6 +47,9 @@
     <Compile Include="paramsResultsToFile.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="plotCosts.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="reimport.py">
       <SubType>Code</SubType>
     </Compile>

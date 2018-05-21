@@ -1,18 +1,18 @@
 import numpy as np
-import matplotlib.pyplot as plt 
 import forwardProp as fp
 import computeCost as cc
 import backProp as bp
 import updateParams as up
 import time
-#import paramsResultsToFile as prtf
 import runModel as rm
 import paramsResultsToFile as prtf
+import plotCosts as pc
 
 def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach_size=None,\
     optimization_technique="GradientDescent",beta_momentum=None, beta_rmsprop=None,\
     regularization_technique="None", lambd=0., keep_prob=None,\
-    debug=False, drawcost=False, evaltest=False, Xtest=None, ytest=None):
+    debug=False, drawcost=False, evaltest=False, Xtest=None, ytest=None,\
+    evalModel=False,evalModelFreqIter=20):
     # Runs a model
     #   iter_count - iteration count
     #   L - number of layers (excl. input)
@@ -28,15 +28,17 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
     #       one of ["GradientDescent","GradientDescentWithMomentum","RMSProp","Adam"]
     #   beta_momentum: opt. techniques GradientDescentWithMomentum, Adam; optimization parameter beta1
     #   beta_rmsprop: opt. techniques RMSProp, Adam; optimization parameter beta2 (exp.weighted square averages)
+    #   regularization_technique: way to reduce overfitting to train set
+    #       one of: ["None","L2","Dropout","Stoppoint"]
+    #   lambd: hyperparam lambda for L2 regularization technique
+    #   keep_prob: vector of probabilities to keep node, size L (last value should be 1.); used in Dropout regularization
     #   debug:
     #   drawcost: plot costs in every iteration on train minibatch (and test if evaltest==True)
     #   evaltest: evaluate model on test set on every iteration and include in graph as red line (or not)
     #   Xtest: X test, used when evaltest=True
     #   ytest: y test, used when evaltest=True
-    #   regularization_technique: way to reduce overfitting to train set
-    #       one of: ["None","L2","Dropout","Stoppoint"]
-    #   lambd: hyperparam lambda for L2 regularization technique
-    #   keep_prob: vector of probabilities to keep node, size L (last value should be 1.); used in Dropout regularization
+    #   evalModel: evaluate the model being trained and write intermediate results to file every evalModelFreqIter iterations?
+    #   evalModelFreqIter: evaluate model every that many iterations
 
     m = y.shape[1]
     if minibach_size is None:
@@ -46,9 +48,9 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
         mtest = ytest.shape[1]
 
     if drawcost:
+        plotCache = None
         costs = []
-        if evaltest:
-            coststest = []
+        coststest = []
 
     #store optimization parameter values in previously calculated iterations
     opt_params = {}
@@ -57,14 +59,6 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
     #cc_time = 0.
     #bp_time = 0.
     #up_time = 0.
-
-    if drawcost:
-        plt.ion()
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        mline, = ax.plot([], costs, 'b-')
-        if evaltest:
-            mlinetest, = ax.plot([], coststest, 'r-')
 
     for iter in range (iter_count):
         if debug:
@@ -87,30 +81,18 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
         #fp_time += time.perf_counter() - start
 
         if drawcost:
-    	    #Compute cost,accuracy
+    	    #Compute cost
             #start = time.perf_counter()
             #cost = cc.computeCost(y, yhat, debug=debug)
             cost = cc.computeCost(y_minib, yhat, debug=debug)
             #cc_time += time.perf_counter() - start
             costs = np.append(costs, cost)
-            #accuracy = np.sum ( y [ np.argmax(yhat, axis=0), range(m) ] ) / m
-            #accuracy = np.sum ( y_minib [ np.argmax(yhat, axis=0), range(m_minib) ] ) / m_minib
-            #accuracies = np.append(accuracies, accuracy)
             if evaltest:
                 _,yhattest = fp.forwardProp(L, params, activations, Xtest, regularization_technique="None", keep_prob=None, debug=False)
                 costtest = cc.computeCost(ytest, yhattest, debug=False)
                 coststest = np.append(coststest, costtest)
-
             #Draw costs
-            mline.set_xdata( np.linspace(1,len(costs),len(costs)) )
-            mline.set_ydata(costs)
-            if evaltest:
-                mlinetest.set_xdata( np.linspace(1,len(coststest),len(coststest)) )
-                mlinetest.set_ydata(coststest)
-            ax.autoscale_view()
-            ax.relim()
-            fig.canvas.draw()
-            fig.canvas.flush_events()
+            plotCache = pc.plotCosts(plotCache, costs, evaltest, coststest)
 
 	    #Backprop
         #start = time.perf_counter()
@@ -125,15 +107,15 @@ def trainModel(iter_count, L, params, activations, X, y, learning_rate, minibach
         #print ("opt_params.keys() AFTER:",opt_params.keys())
         #up_time += time.perf_counter() - start
 
-        ##write intermediate results to file
-        #if np.mod(iter, 20)==0:
-        #    _,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=X, y=y, debug=False, printcost=False)
-        #    _,costTest,accuracyTest = rm.runModel(L, params, activations, X=Xtest, y=ytest, debug=False, printcost=False)
-        #    #output hyper params and results to a file
-        #    prtf.paramsResultsToFile(iter, L, params, activations, learning_rate,\
-        #        optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd=0., keep_prob=keep_prob,\
-        #        costTrain=costTrain, accuracyTrain=accuracyTrain, costTest=costTest, accuracyTest=accuracyTest)
-
+        #write intermediate results to file
+        if evalModel and np.mod(iter+1, evalModelFreqIter)==0:
+            #evaluate model on train, test full sets
+            _,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=X, y=y, debug=False, printcost=False)
+            _,costTest,accuracyTest = rm.runModel(L, params, activations, X=Xtest, y=ytest, debug=False, printcost=False)
+            #output hyper params and results to a file
+            prtf.paramsResultsToFile(iter+1, L, params, activations, learning_rate,\
+                optimization_technique,beta_momentum, beta_rmsprop, regularization_technique, lambd=lambd, keep_prob=keep_prob,\
+                costTrain=costTrain, accuracyTrain=accuracyTrain, costTest=costTest, accuracyTest=accuracyTest)
 
     #print ("fp_time:",fp_time)
     #print ("cc_time:",cc_time)
