@@ -59,6 +59,9 @@
     <Compile Include="runModel.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="showPredicted.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="trainModel.py">
       <SubType>Code</SubType>
     </Compile>
