@@ -6,6 +6,7 @@ def computeCost(y, yhat, debug=False, printall=False):
     #   yhat: predicted values (predictions) of shape [n_y,m]
     #Returns: Softmax cost: 1/m sum_all_samples ( sum_all_classes ( - y*log(yhat) ) )
 
+    #debug=True 
     if debug:
         print ("==Starting computeCost.py")
 
@@ -16,7 +17,7 @@ def computeCost(y, yhat, debug=False, printall=False):
 
     if debug:
         print("loss.shape:",loss.shape)
-        print("loss[:,1:5]:",loss[:,1:5])
+        print("loss[:,1:10]:",loss[:,1:10])
 
     cost = np.mean(loss)
 

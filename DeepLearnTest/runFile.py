@@ -6,22 +6,26 @@ exec(open("reimport.py").read())
 debug=False
 
 #read the data
-images, labels, images_test, labels_test = ld.loadData(debug)
+images, labels, images_test, labels_test = ld.loadData(whichdataset="mnist",debug=debug)
 
 #normalize the data
 images = nd.normalizeData(images, debug)
-images_test = nd.normalizeData(images_test, debug)
+if images_test is not None:
+    images_test = nd.normalizeData(images_test, debug)
 
 m = images.shape[1]
-mtest = images_test.shape[1]
+if images_test is not None:
+    mtest = images_test.shape[1]
+
 n_x = images.shape[0]
-n_y = 10
+n_y = np.max(labels) + 1 #assume the largest value exists in training set
 
 #reshape labels=[1,m] to y=[n_y,m]
 y = np.zeros((n_y,m), dtype="float64")
 y[labels, np.arange(m)] = 1.
-ytest = np.zeros((n_y,mtest), dtype="float64")
-ytest[labels_test, np.arange(mtest)] = 1.
+if images_test is not None:
+    ytest = np.zeros((n_y,mtest), dtype="float64")
+    ytest[labels_test, np.arange(mtest)] = 1.
 #y[:,0:5]
 #labels[0,0:5]
 
@@ -69,11 +73,11 @@ beta_momentum = 0.427799355026437
 beta_rmsprop = 0.999462202362609
 keep_prob = np.append( np.repeat(1.0, L-1), 1.)
 params = iw.initWeights(layerdims,activations)
-params = tm.trainModel(iter_count=500, L=L, params=params, activations=activations,\
-    X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
+params = tm.trainModel(iter_count=200, L=L, params=params, activations=activations,\
+    X=images, y=y, learning_rate=learning_rate, minibach_size=100,\
     optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
     regularization_technique="Dropout", lambd=0., keep_prob=keep_prob,\
-    debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
+    debug=False, drawcost=True, evaltest=False, Xtest=images_test, ytest=ytest)
 print ("Train set results:")
 _,_,_ = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=True)
 print ("Test set results:")
@@ -163,14 +167,14 @@ optimization_technique="Adam"
 beta_momentum = 0.427799355026437
 beta_rmsprop = 0.999462202362609
 regularization_technique="Dropout"
-iter_count=500
+iter_count=1000
 keep_prob = np.append ( np.repeat (0.7, L-1), 1.) 
 params = iw.initWeights(layerdims,activations)
 params = tm.trainModel(iter_count=iter_count, L=L, params=params, activations=activations,\
     X=images, y=y, learning_rate=learning_rate, minibach_size=1024,\
     optimization_technique=optimization_technique, beta_momentum=beta_momentum, beta_rmsprop=beta_rmsprop,\
     regularization_technique=regularization_technique, lambd=0., keep_prob=keep_prob,\
-    debug=False, drawcost=False, evaltest=True, Xtest=images_test, ytest=ytest)
+    debug=False, drawcost=True, evaltest=False, Xtest=images_test, ytest=ytest)
 _,costTrain,accuracyTrain = rm.runModel(L, params, activations, X=images, y=y, debug=False, printcost=True)
 _,costTest,accuracyTest = rm.runModel(L, params, activations, X=images_test, y=ytest, debug=False, printcost=True)
 
